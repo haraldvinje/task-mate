@@ -20,9 +20,7 @@ export const CreateTaskForm: React.FC<Props> = ({ onSuccess }) => {
     if (!loading) {
       try {
         await createTask({ variables: { input: { title } } });
-      } catch (e) {
-        console.log("something");
-      }
+      } catch (e) {}
     }
   };
 

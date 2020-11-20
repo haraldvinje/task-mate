@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
-import { Task, useDeleteTaskMutation } from "../generated/graphql-frontend";
+import {
+  Task,
+  useDeleteTaskMutation,
+  useUpdateTaskMutation,
+} from "../generated/graphql-frontend";
 import Link from "next/link";
+import { Reference } from "@apollo/client";
+import TaskFilter from "./TaskFilter";
+import { TaskStatus } from "../generated/graphql-backend";
 
 export interface Props {
   task: Task;
@@ -14,10 +21,14 @@ const TaskItem: React.FC<Props> = ({ task }) => {
       const deletedTask = result.data?.deleteTask;
 
       if (deletedTask) {
-        console.log(cache);
         cache.modify({
-          id: cache.identify(deletedTask),
-          fields: {},
+          fields: {
+            tasks(taskRefs: Reference[], { readField }) {
+              return taskRefs.filter((taskRef) => {
+                return readField("id", taskRef) !== deletedTask.id;
+              });
+            },
+          },
         });
       }
     },
@@ -26,14 +37,34 @@ const TaskItem: React.FC<Props> = ({ task }) => {
     deleteTask();
   };
 
+  const [
+    updateTask,
+    { loading: updateTaskLoading, error: updateTaskError },
+  ] = useUpdateTaskMutation({ errorPolicy: "all" });
+  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStatus = e.target.checked
+      ? TaskStatus.Completed
+      : TaskStatus.Active;
+    updateTask({ variables: { input: { id: task.id, status: newStatus } } });
+  };
+
   useEffect(() => {
-    if (error) {
-      alert("Error occured");
+    if (updateTaskError) {
+      alert("error occured");
     }
-  }, [error]);
+  }, [updateTaskError]);
 
   return (
     <li className="task-list-item" key={task.id}>
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          onChange={handleStatusChange}
+          checked={task.status === TaskStatus.Completed}
+          disabled={updateTaskLoading}
+        />
+        <span className="checkbox-mark">&#10003;</span>
+      </label>
       <Link href="/update/[id]" as={`/update/${task.id}`}>
         <a className="task-list-item-title">{task.title}</a>
       </Link>
