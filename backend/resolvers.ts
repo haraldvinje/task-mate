@@ -90,9 +90,7 @@ export const resolvers: Resolvers<ApolloContext> = {
         sqlParams
       );
 
-      const updatedTask = await getTaskById(args.input.id, context.db);
-
-      return updatedTask;
+      return await getTaskById(args.input.id, context.db);
     },
     async deleteTask(parent, args, context) {
       const task = await getTaskById(args.id, context.db);
