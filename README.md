@@ -1,8 +1,8 @@
-#task-mate Todo App
+# task-mate Todo App
 
-##Running development server
+## Running development server
 
-###Initialize development database in docker
+### Initialize development database in docker
 
 This App uses a docker based mysql database. Run 
 
@@ -14,11 +14,11 @@ to download the mysql image and start the docker container. Next run
 
 to get local access to the development database.
 
-###Install dependencies and run dev server 
+### Install dependencies and run dev server 
 `npm install`
 `npm run dev`
 
-##Info
+## Info
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
