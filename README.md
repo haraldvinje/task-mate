@@ -16,6 +16,7 @@ to get local access to the development database.
 
 ### Install dependencies and run dev server 
 `npm install`
+
 `npm run dev`
 
 ## Info
